@@ -113,7 +113,7 @@
 				})
 				this.$axios.post("/rtx",{
 					'sender':'系统机器人',
-					'receivers':'全建誉;李盛希;',
+					'receivers':'全建誉;赖珊珊;',
 					'msg':'站点:yyw  首页缓存清理成功;'
 				}).then(res=>{
 					console.log(res)
@@ -136,7 +136,7 @@
 				let successIdsStr = this.successIds.join(',')
 				this.$axios.post("/rtx",{
 					'sender':'全建誉',
-					'receivers':'全建誉;方丹琼;',
+					'receivers':'全建誉;赖珊珊;',
 					'msg':'站点:yyw  产品id:['+successIdsStr+']缓存清理成功;'
 				}).then(res=>{
 					console.log(res)
