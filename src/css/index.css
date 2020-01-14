@@ -1,0 +1,13 @@
+.ib-box{
+    width: 95%;
+    padding: 10px 10px 10px 10px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.main-box{
+
+}
+.breadcrumbs{
+    margin-bottom: 10px;
+}
