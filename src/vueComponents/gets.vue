@@ -13,13 +13,6 @@
 						<el-input placeholder="请输入id,多个以英文半角逗号隔开" v-model="pcIds">
 							<template slot="prepend">PC</template>
 						</el-input>
-						<!--<el-select v-model="listProductColleague" multiple placeholder="请选择">-->
-							<!--<el-option-->
-									<!--v-for="item in options"-->
-									<!--:key="item.value"-->
-									<!--:value="item.value">-->
-							<!--</el-option>-->
-						<!--</el-select>-->
 						<el-button :disabled="pcIds.length<1" type="primary" :loading="pcProcessing" @click="pcDelCache">清除缓存</el-button>
 					</div>
 				</el-tab-pane>
@@ -64,9 +57,10 @@
 					}
 				}).then(r => {
 					console.log(r)
+					let store = that.$store
 					that.$axios.post("/rtx",{
-						'sender':'全建誉',
-						'receivers':'全建誉;邱国华;',
+						'sender':store.state.sender,
+						'receivers':store.getters.getRtxReceivesName,
 						'msg':'站点:gets  优惠券缓存清理成功;'
 					}).then(res=>{
 						console.log(res)

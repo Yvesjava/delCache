@@ -12,13 +12,19 @@ import 'element-ui/lib/theme-chalk/index.css'
 import index from './lib/index.js'
 import axios from 'axios'
 import 'http-proxy-middleware'
-import store from 'vuex'
+import store from './store/index.js'
 
 Vue.use(VueRouter)
 Vue.use(ElementUI)
 Vue.prototype.$axios = axios;
 Vue.prototype.$index = index;
-Vue.prototype.$store = store;
+Vue.prototype.$postRtx = msg => {
+	axios.post( "/rtx", {
+		'sender': this.$store.state.sender,
+		'receivers': this.$store.getters.getRtxReceivesName,
+		'msg': msg
+	} )
+}
 
 var vm = new Vue( {
 	el: '#app',

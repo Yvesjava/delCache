@@ -1,13 +1,44 @@
 import Vuex from 'vuex'
+import Vue from 'vue'
 
-const store = new Vuex.Store({
-	// state: {
-	// 	listProductColleague: ["李盛希", "yyyyyyyy", "xxxxxxxx", "wwwwwwww", "vvvvvvvv"]
-	// },
-	// getters: {
-	// 	getListProductColleague: state => {
-	// 		return state.listProductColleague
-	// 	}
-	// }
-})
-export default store  // 导出store并在 main.js中引用注册。
+Vue.use( Vuex )
+let store = new Vuex.Store( {
+	state: {
+		listProductColleague: [ {
+			"name": "李盛希",
+			"group": "1",
+			"groupName": "产品组",
+			"id": 1,
+			"status": 0
+		}, { "name": "李盛干", "group": "1", "groupName": "产品组", "id": 2, "status": 0 }, {
+			"name": "李盛稠",
+			"group": "1",
+			"groupName": "产品组",
+			"id": 3,
+			"status": 0
+		} ],
+		receives: [ { "name": "全建誉", "id": 0, "status": 1 } ],
+		rtxReceives: [],
+		sender: '系统机器人'
+	},
+	mutations: {
+		changStatus( state, index ) {
+			state.listProductColleague[ index ].status = !state.listProductColleague[ index ].status
+		}
+	},
+	getters: {
+		getRtxReceives: state => {
+			return state.listProductColleague.filter( data => {
+				return data.status
+			} ).concat( state.receives )
+		},
+		getRtxReceivesName: state => {
+			return state.listProductColleague.filter( data => {
+				return data.status
+			} ).concat( state.receives ).map( ( item, index ) => {
+				return item.name
+			} ).join(';')
+		}
+	}
+} )
+export default store

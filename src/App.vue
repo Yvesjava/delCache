@@ -34,6 +34,10 @@
 							<i class="el-icon-setting"></i>
 							<span slot="title">suitshe</span>
 						</el-menu-item>
+						<el-menu-item index="6">
+							<i class="el-icon-setting"></i>
+							<span slot="title">set</span>
+						</el-menu-item>
 					</el-menu>
 				</el-aside>
 				<el-container>
