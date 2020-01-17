@@ -22,6 +22,12 @@ let store = new Vuex.Store( {
 			"groupName": "采购部",
 			"id": 4,
 			"status": 0
+		}, {
+			"name": "陈子丰",
+			"group": "3",
+			"groupName": "采购部",
+			"id": 2612,
+			"status": 0
 		} ],
 		receives: [ { "name": "全建誉", "id": 0, "status": 1 } ],
 		rtxReceives: [],

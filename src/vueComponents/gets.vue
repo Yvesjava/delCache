@@ -96,6 +96,7 @@
 				}))
 				item.successIds.length>0 && this.$index.successRtx(this, "站点:gets\n  产品id:[" +item.successIds.join(',')+"]缓存清理成功")
 				item.processing = false
+				item.successIds = []
 			}
 		},
 		name: "gets"
