@@ -18,13 +18,6 @@ Vue.use(VueRouter)
 Vue.use(ElementUI)
 Vue.prototype.$axios = axios;
 Vue.prototype.$index = index;
-Vue.prototype.$postRtx = msg => {
-	axios.post( "/rtx", {
-		'sender': this.$store.state.sender,
-		'receivers': this.$store.getters.getRtxReceivesName,
-		'msg': msg
-	} )
-}
 
 var vm = new Vue( {
 	el: '#app',

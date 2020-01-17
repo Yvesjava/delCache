@@ -10,10 +10,10 @@
 			<el-tabs v-model="activeName" @tab-click="handleClick">
 				<el-tab-pane label="单款产品" name="first">
 					<div class="ib-box">
-						<el-input placeholder="请输入id,多个以英文半角逗号隔开" v-model="pcIds">
+						<el-input placeholder="请输入id,多个以英文半角逗号隔开" v-model="delItemsCachePC[0].ids">
 							<template slot="prepend">PC</template>
 						</el-input>
-						<el-button :disabled="pcIds.length<1" type="primary" :loading="pcProcessing" @click="pcDelCache">清除缓存</el-button>
+						<el-button :disabled="delItemsCachePC[0].ids.length<1" type="primary" :loading="delItemsCachePC[0].processing" @click="pcDelCache">清除缓存</el-button>
 					</div>
 					<div class="ib-box">
 						<el-input placeholder="请输入id,多个以英文半角逗号隔开" v-model="mobileIds">
@@ -46,165 +46,57 @@
 	export default {
 		data() {
 			return {
-				pcIds: '',
-				mobileIds: '',
 				activeName: 'first',
-				mobileProcessing: false,
-				pcProcessing: false,
-				successIds:[],
-				discountProcessing:false,
-				delItemsCacheProcessing:false,
-				delPromotionProductProcessing:false
+				delItemsCachePC: [
+					{
+						ids: '',
+						pro: '产品',
+						url: '/gets/app/gets/awesomeTool.php?act=delItemsCache&producesId=',
+						testConditions: ['permission'],
+						processing: false,
+						successIds: []
+					}
+				]
 			}
 		},
 		methods: {
 			handleClick(tab, event) {
 				console.log(tab, event)
 			},
-			async delItemsCache() {
-				this.delItemsCacheProcessing = true
-				let url = "yyw/app/gets/awesomeTool.php?act=delItemsCache&producesId=0"
-				await this.$axios.get(url).then(res => {
-					console.log(res)
-				})
-				this.$axios.post("/rtx",{
-					'sender':'全建誉',
-					'receivers':'全建誉;李盛希;',
-					'msg':'站点:yyw  产品详情页缓存删除成功;'
-				}).then(res=>{
-					console.log(res)
-				})
-				this.delItemsCacheProcessing = false
+			async delCoupons() {
+				this.delCouponsProcessing = true
+				let url = "/gets/app/gets/awesomeTool.php?act=delCoupons"
+				let msg = "站点:gets\n\n\t优惠券清理"
+				this.$index.simpleGet(this, url, msg)
+				this.delCouponsProcessing = false
 			},
-			async delPromotionProduct() {
-				this.delPromotionProductProcessing = true
-				let url = "yyw/app/gets/awesomeTool.php?act=delPromotionProduct"
-				await this.$axios.get(url).then(res => {
-					console.log(res)
-				})
-				this.$axios.post("/rtx",{
-					'sender':'全建誉',
-					'receivers':'全建誉;李盛希;方丹琼;蒋姣芳;',
-					'msg':'站点:yyw  推广产品的缓存删除成功;'
-				}).then(res=>{
-					console.log(res)
-				})
-				this.delPromotionProductProcessing = false
+			pcDelCache() {
+				this.delItems(this.delItemsCachePC[0])
 			},
-			async pcDelCacheDiscount() {
-				this.discountProcessing = true
-				let url = "yyw/app/gets/awesomeTool.php?act=delDiscount"
-				await this.$axios.get(url).then(res => {
-					console.log(res)
-				})
-				this.$axios.post("/rtx",{
-					'sender':'全建誉',
-					'receivers':'全建誉;李盛希;方丹琼;蒋姣芳;',
-					'msg':'站点:yyw  折扣缓存清理成功;'
-				}).then(res=>{
-					console.log(res)
-				})
-				this.discountProcessing = false
-			},
-			async pcDelCacheIndex() {
-				let url = "yyw/app/gets/awesomeTool.php?act=delIndexCache"
-				await this.$axios.get(url).then(res => {
-					console.log(res)
-				})
-				this.$axios.post("/rtx",{
-					'sender':'系统机器人',
-					'receivers':'全建誉;赖珊珊;',
-					'msg':'站点:yyw  首页缓存清理成功;'
-				}).then(res=>{
-					console.log(res)
-				})
-			},
-			async pcDelCache() {
+			async delItems(item) {
 				let that = this
-				this.pcProcessing = true
-				let pcidsArr = this.pcIds.split(',')
-				pcidsArr = this.$index.unique(pcidsArr)
-				let urlArr = []
-				for (let id of pcidsArr) {
-					if (that.$index.isIntNum(id)) {
-						urlArr.push({url : "/yyw/app/gets/awesomeTool.php?act=delItemsCache&producesId=" + id , id:id})
-					}
-				}
-				for (const url of urlArr) {
-					await that.del(url)
-				}
-				let successIdsStr = this.successIds.join(',')
-				this.$axios.post("/rtx",{
-					'sender':'全建誉',
-					'receivers':'全建誉;赖珊珊;',
-					'msg':'站点:yyw  产品id:['+successIdsStr+']缓存清理成功;'
-				}).then(res=>{
-					console.log(res)
-				})
-				this.pcProcessing = false
-				this.successIds = []
-			},
-			pcDelCouponCache() {
-				let url = this.pcBaseUrl + "?act=delCoupons"
-				let p = this.del(url)
-				p.then(res => {
-					console.log(res)
-					if (res.status === 200) {
-						this.successMsg(res.data)
-					} else {
-						this.failMsg(res.data)
-					}
-				})
-			},
-			async mobileDelCache() {
-				let that = this
-				this.mobileProcessing = true
-				let idsArr = this.mobileIds.split(',')
-				idsArr = this.$index.unique(idsArr)
-				let urlArr = []
-				for (let id of idsArr) {
-					if (that.$index.isIntNum(id)) {
-						urlArr.push({url : "/m/yyw/gets/awesomeTool.php?act=delItemsCache&producesId=" + id , id:id})
-					}
-				}
-				for (const url of urlArr) {
-					await that.del(url)
-				}
-				let successIdsStr = this.successIds.join(',')
-				this.$axios.post("/rtx",{
-					'sender':'全建誉',
-					'receivers':'全建誉;李盛希;',
-					'msg':'站点:m.yyw  产品id:['+successIdsStr+']缓存清理成功;'
-				}).then(res=>{
-					console.log(res)
-				})
-				this.mobileProcessing = false
-				this.successIds = []
-			},
-			del(url) {
-				return this.$axios.get(url.url).then(res => {
-					if (res.status === 200) {
-						this.successMsg(res.data)
-						if (/producesId/.test(res.data)){
-							this.successIds.push(url.id)
+				item.processing = true
+				let idsArr = this.$index.unique(item.ids.split(','))
+				await Promise.all(idsArr.map(async (id, ss) => {
+					that.$index.isIntNum(id) && await that.$axios.get(item.url + id).then(res => {
+						if((res.status === 200) ? (item.testConditions.every((s, i) => (res.data.indexOf(s) < 0))) : false){
+							item.successIds.push(id)
+							that.$notify({
+								title: '成功',
+								message: res.data,
+								type: 'success'
+							});
+						}else {
+							that.$notify({
+								title: '失败',
+								message: res.data,
+								type: 'fail'
+							});
 						}
-					} else {
-						this.failMsg(res.data)
-					}
-				})
-			},
-			successMsg(msg) {
-				this.$notify({
-					title: '成功',
-					message: msg,
-					type: 'success'
-				})
-			},
-			failMsg(msg) {
-				this.$notify.error({
-					title: '错误',
-					message: msg
-				})
+					})
+				}))
+				item.successIds.length>0 && this.$index.successRtx(this, "站点:yyw\n  产品id:[" +item.successIds.join(',')+"]缓存清理成功")
+				item.processing = false
 			}
 		},
 		name: "yyw"
