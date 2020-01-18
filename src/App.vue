@@ -6,7 +6,7 @@
 				<el-aside width="200px">
 					<el-menu
 							router
-							default-active="1"
+							default-active="$route.path"
 							class="el-menu-vertical-demo"
 							@open="handleOpen"
 							@close="handleClose"

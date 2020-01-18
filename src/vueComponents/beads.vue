@@ -10,23 +10,20 @@
 			<el-tabs v-model="activeName" @tab-click="handleClick">
 				<el-tab-pane label="单款产品" name="first">
 					<div class="ib-box">
-						<el-input placeholder="请输入id,多个以英文半角逗号隔开" v-model="pcIds">
+						<el-input placeholder="请输入id,多个以英文半角逗号隔开" v-model="delItemsCachePC[0].ids">
 							<template slot="prepend">PC</template>
 						</el-input>
-						<el-button :disabled="pcIds.length<1" :loading="pcProcessing" type="primary" @click="pcDelCache">清除缓存</el-button>
-					</div>
-					<div class="ib-box">
-						<el-input placeholder="请输入id,多个以英文半角逗号隔开" v-model="mobileIds">
-							<template slot="prepend">Mobile</template>
-						</el-input>
-						<el-button :disabled="mobileIds.length<1" :loading="mobileProcessing" type="primary" @click="mobileDelCache">清除缓存</el-button>
+						<el-button :disabled="delItemsCachePC[0].ids.length<1" type="primary" :loading="delItemsCachePC[0].processing" @click="pcDelCache">清除缓存</el-button>
 					</div>
 				</el-tab-pane>
 				<el-tab-pane label="首页缓存" name="second">
-					<el-button type="primary" @click="pcDelCacheIndex">清除PC首页缓存</el-button>
+					<el-button type="primary" :loading="delIndexCachePC[0].processing" @click.stop="allMost(delIndexCachePC[0])">清除首页缓存</el-button>
 				</el-tab-pane>
-				<el-tab-pane label="折扣缓存" name="third">
-					<el-button :loading="discountProcessing" type="primary" @click="pcDelCacheDiscount">清除缓存</el-button>
+				<el-tab-pane label="优惠券缓存" name="third">
+					<el-button type="primary" :loading="delCouponPC[0].processing" @click="allMost(delCouponPC[0])">清除优惠券缓存</el-button>
+				</el-tab-pane>
+				<el-tab-pane label="搜索页缓存" name="five">
+					<el-button type="primary" :loading="delSearchPC[0].processing" @click="allMost(delSearchPC[0])">清除搜索页缓存</el-button>
 				</el-tab-pane>
 			</el-tabs>
 		</div>
@@ -37,127 +34,215 @@
 	export default {
 		data() {
 			return {
-				pcBaseUrl: '//www.beads.us/app/gets/awesomeTool.php',
-				mobileBaseUrl: '//m.beads.us/gets/awesomeTool.php',
-				pcIds: '',
-				mobileIds: '',
 				activeName: 'first',
-				pcProcessing: false,
-				mobileProcessing: false,
-				discountProcessing: false,
-				successIds:[]
+				delPrivatePC: [{
+					func:"delPrivate",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delPrivate',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nPrivate缓存清理",
+					processing: false,
+				}],
+				delSphinxNewPC: [{
+					func:"delSphinxNew",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSphinxNew',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\ndelSphinxNew缓存清理",
+					processing: false,
+				}],
+				delSphinxHotPC: [{
+					func:"delSphinxHot",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSphinxHot',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nsphinx_hotProduct缓存清理",
+					processing: false,
+				}],
+				userTopSellPC: [{
+					func:"userTopSell",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=userTopSell',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n用户中心销售排行缓存清理",
+					processing: false,
+				}],
+				delDiyItemsCachePC: [{
+					func:"delDiyItemsCache",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delDiyItemsCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n订制化下所有详细页面缓存清理",
+					processing: false,
+				}],
+				delHotCategoryPC: [{
+					func:"delHotCategory",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delHotCategory',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n热销产品分类页相关缓存清理",
+					processing: false,
+				}],
+				delNewAndHotProdsPC: [{
+					func:"delNewAndHotProds",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delNewAndHotProds',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n热销产品相关缓存清理",
+					processing: false,
+				}],
+				delCurrencyConverterPC: [{
+					func:"delCurrencyConverter",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delCurrencyConverter',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n币种转换页面缓存清理",
+					processing: false,
+				}],
+				delBestSellersPC: [{
+					func:"delBestSellers",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delBestSellers',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nbest sellers缓存清理",
+					processing: false,
+				}],
+				delDesignListPC: [{
+					func:"delDesignList",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delDesignList',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\ndesign_list缓存清理",
+					processing: false,
+				}],
+				delCollectionsPC: [{
+					func:"delCollections",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delCollections',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\ncollections页面相关缓存清理",
+					processing: false,
+				}],
+				delFinishedJewelryPC: [{
+					func:"delFinishedJewelry",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delFinishedJewelry',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n成品饰品页面相关缓存清理",
+					processing: false,
+				}],
+				delChristmasCachePC: [{
+					func:"delChristmasCache",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delChristmasCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n圣诞专题页面相关缓存清理",
+					processing: false,
+				}],
+				delSitemapCachePC: [{
+					func:"delSitemapCache",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSitemapCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nsitemap页面相关缓存清理",
+					processing: false,
+				}],
+				delSales_promotionCachePC: [{
+					func:"delSales_promotionCache",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSales_promotionCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n热销产品页缓存清理",
+					processing: false,
+				}],
+				delRenewCatalogCachePC: [{
+					func:"delRenewCatalogCache",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delRenewCatalogCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n最新目录页缓存清理",
+					processing: false,
+				}],
+				delProduceCachePC: [{
+					func:"delProduceCache",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delProduceCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n最新产品页缓存清理",
+					processing: false,
+				}],
+				delIndexCachePC: [{
+					func:"delIndexCache",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delIndexCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n首页缓存清理",
+					processing: false,
+				}],
+				delSphinxNewProductPC: [{
+					func:"delSphinxNewProduct",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSphinxNewProduct',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nsphinx新品产品缓存清理",
+					processing: false,
+				}],
+				delSphinxHotProductPC: [{
+					func:"delSphinxHotProduct",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSphinxHotProduct',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nsphinx热销产品缓存清理",
+					processing: false,
+				}],
+				delMostWishPC: [{
+					func:"delMostWish",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delMostWish',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n收藏产品页面清理",
+					processing: false,
+				}],
+				delVipPC: [{
+					func:"delVip",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delVip',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nVIP介绍页面清理",
+					processing: false,
+				}],
+				delSearchPC: [{
+					func:"delSearch",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSearch',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n搜索页缓存清理",
+					processing: false,
+				}],
+				delCouponPC: [{
+					func:"delCoupon",
+					url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delCoupon',
+					testConditions: ['permission'],
+					msg: "站点:"+this.$options.name+"\n优惠券缓存清理",
+					processing: false,
+				}],
+				delItemsCachePC: [
+					{
+						ids: '',
+						url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delItemsCache&producesId=',
+						testConditions: ['permission'],
+						processing: false,
+						successIds: []
+					}
+				],
+				delSortCachePC: [
+					{
+						ids: '',
+						url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delSortCache&sortsId=',
+						testConditions: ['permission'],
+						processing: false,
+						successIds: []
+					}
+				],
+				delCrumbsSearchPC: [
+					{
+						ids: '',
+						url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delCrumbsSearch&sortsId=',
+						testConditions: ['permission'],
+						processing: false,
+						successIds: []
+					}
+				]
 			}
 		},
 		methods: {
 			handleClick(tab, event) {
 				console.log(tab, event)
 			},
-			async pcDelCacheIndex() {
-				let that = this
-				let url = "beads/app/gets/awesomeTool.php?act=delIndexCache"
-				await this.$axios.get(url).then(res => {
-					console.log(res)
-				})
-				this.$axios.post("/rtx",{
-					'sender':'全建誉',
-					'receivers':'全建誉;李盛希;',
-					'msg':'站点:beads  首页缓存清理成功;'
-				}).then(res=>{
-					console.log(res)
-				})
+			allMost(obj){
+				let funStr = "this.$index.simpleGet(this, this."+obj.func+"PC[0])"
+				eval(funStr)
 			},
-			async pcDelCacheDiscount() {
-				let that = this
-				this.discountProcessing = true
-				let url = "beads/app/gets/awesomeTool.php?act=delDiscount"
-				await this.$axios.get(url).then(res => {
-					console.log(res)
-				})
-				this.$axios.post("/rtx",{
-					'sender':'全建誉',
-					'receivers':'全建誉;邱国华;',
-					'msg':'站点:beads  折扣缓存清理成功;'
-				}).then(res=>{
-					console.log(res)
-				})
-				this.discountProcessing = false
-			},
-			async mobileDelCache() {
-				let that = this
-				this.mobileProcessing = true
-				let idsArr = this.mobileIds.split(',')
-				idsArr = this.$index.unique(idsArr)
-				let urlArr = []
-				for (let id of idsArr) {
-					if (that.$index.isIntNum(id)) {
-						urlArr.push({url : "/m/beads/gets/awesomeTool.php?act=delItemsCache&producesId=" + id , id:id})
-					}
-				}
-				for (const url of urlArr) {
-					await that.del(url)
-				}
-				let successIdsStr = this.successIds.join(',')
-				this.$axios.post("/rtx",{
-					'sender':'全建誉',
-					'receivers':'全建誉;李盛希;',
-					'msg':'站点:m.beads  产品id:['+successIdsStr+']缓存清理成功;'
-				}).then(res=>{
-					console.log(successIdsStr)
-					console.log(res)
-				})
-				this.mobileProcessing = false
-				this.successIds = []
-			},
-			async pcDelCache() {
-				let that = this
-				this.pcProcessing = true
-				let pcidsArr = this.pcIds.split(',')
-				pcidsArr = this.$index.unique(pcidsArr)
-				let urlArr = []
-				for (let id of pcidsArr) {
-					if (that.$index.isIntNum(id)) {
-						urlArr.push({url : "/beads/app/gets/awesomeTool.php?act=delItemsCache&producesId=" + id , id:id})
-					}
-				}
-				for (const url of urlArr) {
-					await that.del(url)
-				}
-				let successIdsStr = this.successIds.join(',')
-				this.$axios.post("/rtx",{
-					'sender':'全建誉',
-					'receivers':'全建誉;招卓宏;',
-					'msg':'站点:beads  产品id:['+successIdsStr+']缓存清理成功;'
-				}).then(res=>{
-					console.log(successIdsStr)
-					console.log(res)
-				})
-				this.pcProcessing = false
-				this.successIds = []
-			},
-			del(url) {
-				return this.$axios.get(url.url).then(res => {
-					if (res.status === 200) {
-						this.successMsg(res.data)
-						if (/producesId/.test(res.data)){
-							this.successIds.push(url.id)
-						}
-					} else {
-						this.failMsg(res.data)
-					}
-				})
-			},
-			successMsg(msg) {
-				this.$notify({
-					title: '成功',
-					message: msg,
-					type: 'success'
-				})
-			},
-			failMsg(msg) {
-				this.$notify.error({
-					title: '错误',
-					message: msg
-				})
+			pcDelCache() {
+				let msg = "站点:"+this.$options.name+"\n产品缓存清理成功\n产品ID"
+				this.$index.delItems(this, this.delItemsCachePC[0], msg)
 			}
 		},
 		name: "beads"

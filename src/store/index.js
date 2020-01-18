@@ -7,20 +7,20 @@ let store = new Vuex.Store( {
 		listProductColleague: [ {
 			"name": "李盛希",
 			"group": "2",
-			"groupName": "平台销售",
-			"id": 1,
+			"groupName": "平台翻译组",
+			"id": 2626,
 			"status": 0
-		}, { "name": "伍妙芬", "group": "1", "groupName": "产品部", "id": 2, "status": 0 }, {
+		}, { "name": "伍妙芬", "group": "1", "groupName": "核计组", "id": 2715, "status": 0 }, {
 			"name": "杨定骋",
 			"group": "1",
-			"groupName": "产品组",
-			"id": 3,
+			"groupName": "编辑组",
+			"id": 3937,
 			"status": 0
 		}, {
 			"name": "黄彩婷",
 			"group": "3",
-			"groupName": "采购部",
-			"id": 4,
+			"groupName": "采购员",
+			"id": 2847,
 			"status": 0
 		}, {
 			"name": "陈子丰",
