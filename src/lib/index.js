@@ -23,7 +23,7 @@ export default {
 	 */
 	postRtx: (that, receives, msg) => {
 		let sender = that.$store.state.sender
-		that.$axios.post("/rtx",{
+		that.$axios.post("/rtx", {
 			'sender': sender,
 			'receivers': receives,
 			'msg': msg
@@ -32,38 +32,46 @@ export default {
 	/**
 	 * 简单请求方法,只提供url,即可完成请求,无需其他参数
 	 * @param that vue实例
-	 * @param url 请求url
-	 * @param msg 成功的提示消息
+	 * @param item
 	 */
-	simpleGet: (that, url,msg) => {
-		that.$axios.get(url).then(res => {
+	simpleGet:async (that, item) => {
+		item.processing = true
+		await that.$axios.get(item.url).then(res => {
 			if (res.status === 200) {
-				if (res.data.indexOf("permission") < 0) {
+				if (item.testConditions.every(s => (res.data.indexOf(s) < 0))) {
 					// 成功了
-					that.$index.successRtx(that,msg+"成功:\n\t" + res.data)
+					that.$notify({
+						title: '成功',
+						message: res.data,
+						type: 'success'
+					})
+					that.$index.successRtx(that, item.msg + "\n" + res.data)
 				} else {
 					// 没有权限,ip限制了
 					that.$notify({
 						title: '错误',
-						message: res.data
+						message: res.data,
+						type: 'fail'
 					})
-					that.$index.failRtx(that, msg+"失败,错误信息:\n\t" + res.data)
+					that.$index.failRtx(that, item.msg + "失败,错误信息:\n" + res.data)
 				}
 			} else {
 				that.$notify({
 					title: '错误',
-					message: "网络错误,请求失败"
+					message: "网络错误,请求失败",
+					type: 'fail'
 				})
-				that.$index.failRtx(that,  msg+"失败,错误:\n\t请求错误,请检查后再试")
+				that.$index.failRtx(that, item.msg + "失败,错误:\n\t请求错误,请检查后再试")
 			}
 		})
+		item.processing = false
 	},
 	/**
 	 * 发送失败rtx消息
 	 * @param that vue实例
 	 * @param msg 消息文字
 	 */
-	failRtx: (that,msg) => {
+	failRtx: (that, msg) => {
 		that.$index.postRtx(that, that.$store.getters.getDefaultReceivesName, msg)
 	},
 	/**
@@ -71,21 +79,39 @@ export default {
 	 * @param that vue实例
 	 * @param msg 消息文字
 	 */
-	successRtx:(that,msg)=>{
+	successRtx: (that, msg) => {
 		that.$index.postRtx(that, that.$store.getters.getRtxReceivesName, msg)
 	},
 	/**
-	 * 传入url,判断条件(字符串数组),如果返回结果中有字符串数组中的值,则为失败
+	 * 删除需要传入参数的缓存方法
 	 * @param that vue实例
-	 * @param url 请求url
-	 * @param testConditions 判断条件
+	 * @param item 对应的数组
+	 * @param sucMsg 成功的rt消息字符串
 	 * @returns {Promise<void>}
 	 */
-	delCacheItemSync:async (that,url,testConditions)=>{
-		await that.$axios.get(url).then(res => {
-			return (res.status === 200) ? (testConditions.every((item,i) => (res.data.indexOf(item) < 0))) : false
-		})
-	},
-	delCacheItem:(that,url)=>{return that.$axios.get(url)}
-
+	delItems: async (that,item, sucMsg) => {
+		let _that = that
+		item.processing = true
+		await Promise.all(_that.$index.unique(item.ids.split(',')).map(async id => {
+			_that.$index.isIntNum(id) && await _that.$axios.get(item.url).then(res => {
+				if ((res.status === 200) ? (item.testConditions.every(s => (res.data.indexOf(s) < 0))) : false) {
+					item.successIds.push(id)
+					_that.$notify({
+						title: '成功',
+						message: res.data,
+						type: 'success'
+					})
+				} else {
+					_that.$notify({
+						title: '失败',
+						message: res.data,
+						type: 'fail'
+					})
+				}
+			})
+		}))
+		item.successIds.length > 0 && _that.$index.successRtx(_that, sucMsg + "[" + item.successIds.join(',') + "]")
+		item.processing = false
+		item.successIds = []
+	}
 }

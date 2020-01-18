@@ -15,28 +15,15 @@
 						</el-input>
 						<el-button :disabled="delItemsCachePC[0].ids.length<1" type="primary" :loading="delItemsCachePC[0].processing" @click="pcDelCache">清除缓存</el-button>
 					</div>
-					<div class="ib-box">
-						<el-input placeholder="请输入id,多个以英文半角逗号隔开" v-model="mobileIds">
-							<template slot="prepend">Mobile</template>
-						</el-input>
-						<el-button :disabled="mobileIds.length<1" type="primary" :loading="mobileProcessing" @click="mobileDelCache">清除缓存</el-button>
-					</div>
 				</el-tab-pane>
-				<el-tab-pane label="首页缓存" name="second">
-					<el-button type="primary" @click="pcDelCacheIndex">清除PC首页缓存</el-button>
+				<el-tab-pane label="首页缓存" name="second">首页缓存</el-tab-pane>
+				<el-tab-pane label="优惠券缓存" name="third">
+					<el-button type="primary" :loading="delCouponPC[0].processing" @click="delCoupon">清除优惠券缓存</el-button>
 				</el-tab-pane>
-				<el-tab-pane label="折扣缓存" name="third">
-					<el-button type="primary" :loading="discountProcessing" @click="pcDelCacheDiscount">清除PC折扣缓存</el-button>
+				<el-tab-pane label="搜索页缓存" name="five">
+					<el-button type="primary" :loading="delSearchPC[0].processing" @click="delSearch">清除搜索页缓存</el-button>
 				</el-tab-pane>
-				<el-tab-pane label="优惠券缓存" name="fourth">
-					<el-button type="primary" @click="pcDelCouponCache">清除优惠券缓存</el-button>
-				</el-tab-pane>
-				<el-tab-pane label="促销产品缓存" name="five">
-					<el-button type="primary" :loading="delPromotionProductProcessing" @click="delPromotionProduct">清除促销产品缓存</el-button>
-				</el-tab-pane>
-				<el-tab-pane label="产品详情页缓存" name="six">
-					<el-button type="primary" :loading="delItemsCacheProcessing" @click="delItemsCache">清除产品详情页缓存</el-button>
-				</el-tab-pane>
+
 			</el-tabs>
 		</div>
 	</div>
@@ -47,11 +34,172 @@
 		data() {
 			return {
 				activeName: 'first',
+				delPrivatePC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delPrivate',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nPrivate缓存清理",
+					processing: false,
+				}],
+				delSphinxNewPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSphinxNew',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\ndelSphinxNew缓存清理",
+					processing: false,
+				}],
+				delSphinxHotPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSphinxHot',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nsphinx_hotProduct缓存清理",
+					processing: false,
+				}],
+				userTopSellPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=userTopSell',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n用户中心销售排行缓存清理",
+					processing: false,
+				}],
+				delDiyItemsCachePC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delDiyItemsCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n订制化下所有详细页面缓存清理",
+					processing: false,
+				}],
+				delHotCategoryPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delHotCategory',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n热销产品分类页相关缓存清理",
+					processing: false,
+				}],
+				delNewAndHotProdsPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delNewAndHotProds',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n热销产品相关缓存清理",
+					processing: false,
+				}],
+				delCurrencyConverterPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delCurrencyConverter',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n币种转换页面缓存清理",
+					processing: false,
+				}],
+				delBestSellersPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delDesignList',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nbest sellers缓存清理",
+					processing: false,
+				}],
+				delDesignListPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delDesignList',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\ndesign_list缓存清理",
+					processing: false,
+				}],
+				delCollectionsPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delCollections',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\ncollections页面相关缓存清理",
+					processing: false,
+				}],
+				delFinishedJewelryPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delFinishedJewelry',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n成品饰品页面相关缓存清理",
+					processing: false,
+				}],
+				delChristmasCachePC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delChristmasCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n圣诞专题页面相关缓存清理",
+					processing: false,
+				}],
+				delSitemapCachePC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSitemapCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nsitemap页面相关缓存清理",
+					processing: false,
+				}],
+				delSales_promotionCachePC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSales_promotionCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n热销产品页缓存清理",
+					processing: false,
+				}],
+				delRenewCatalogCachePC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delRenewCatalogCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n最新目录页缓存清理",
+					processing: false,
+				}],
+				delProduceCachePC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delProduceCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n最新产品页缓存清理",
+					processing: false,
+				}],
+				delIndexCachePC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delIndexCache',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n首页缓存清理",
+					processing: false,
+				}],
+				delSphinxNewProductPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSphinxNewProduct',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nsphinx新品产品缓存清理",
+					processing: false,
+				}],
+				delSphinxHotProductPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSphinxHotProduct',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nsphinx热销产品缓存清理",
+					processing: false,
+				}],
+				delMostWishPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delMostWish',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n收藏产品页面清理",
+					processing: false,
+				}],
+				delVipPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delVip',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\nVIP介绍页面清理",
+					processing: false,
+				}],
+				delSearchPC: [{
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSearch',
+					testConditions: ['permission'],
+					msg: "站点:" + this.$options.name + "\n搜索页缓存清理",
+					processing: false,
+				}],
+				delCouponPC: [{
+					url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delCoupon',
+					testConditions: ['permission'],
+					msg: "站点:"+this.$options.name+"\n优惠券缓存清理",
+					processing: false,
+				}],
 				delItemsCachePC: [
 					{
 						ids: '',
-						pro: '产品',
-						url: '/gets/app/gets/awesomeTool.php?act=delItemsCache&producesId=',
+						url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delItemsCache&producesId=',
+						testConditions: ['permission'],
+						processing: false,
+						successIds: []
+					}
+				],
+				delSortCachePC: [
+					{
+						ids: '',
+						url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delSortCache&sortsId=',
+						testConditions: ['permission'],
+						processing: false,
+						successIds: []
+					}
+				],
+				delCrumbsSearchPC: [
+					{
+						ids: '',
+						url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delCrumbsSearch&sortsId=',
 						testConditions: ['permission'],
 						processing: false,
 						successIds: []
@@ -63,40 +211,15 @@
 			handleClick(tab, event) {
 				console.log(tab, event)
 			},
-			async delCoupons() {
-				this.delCouponsProcessing = true
-				let url = "/gets/app/gets/awesomeTool.php?act=delCoupons"
-				let msg = "站点:gets\n\n\t优惠券清理"
-				this.$index.simpleGet(this, url, msg)
-				this.delCouponsProcessing = false
+			delSearch() {
+				this.$index.simpleGet(this, this.delSearchPC[0])
+			},
+			delCoupon() {
+				this.$index.simpleGet(this, this.delCouponPC[0])
 			},
 			pcDelCache() {
-				this.delItems(this.delItemsCachePC[0])
-			},
-			async delItems(item) {
-				let that = this
-				item.processing = true
-				let idsArr = this.$index.unique(item.ids.split(','))
-				await Promise.all(idsArr.map(async (id, ss) => {
-					that.$index.isIntNum(id) && await that.$axios.get(item.url + id).then(res => {
-						if((res.status === 200) ? (item.testConditions.every((s, i) => (res.data.indexOf(s) < 0))) : false){
-							item.successIds.push(id)
-							that.$notify({
-								title: '成功',
-								message: res.data,
-								type: 'success'
-							});
-						}else {
-							that.$notify({
-								title: '失败',
-								message: res.data,
-								type: 'fail'
-							});
-						}
-					})
-				}))
-				item.successIds.length>0 && this.$index.successRtx(this, "站点:yyw\n  产品id:[" +item.successIds.join(',')+"]缓存清理成功")
-				item.processing = false
+				let msg = "站点:"+this.$options.name+"\n产品缓存清理成功\n产品ID"
+				this.$index.delItems(this,this.delItemsCachePC[0],msg)
 			}
 		},
 		name: "yyw"
