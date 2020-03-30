@@ -6,7 +6,7 @@
 				<el-aside width="200px">
 					<el-menu
 							router
-							default-active="$route.path"
+							:default-active="$route.path"
 							class="el-menu-vertical-demo"
 							@open="handleOpen"
 							@close="handleClose"
@@ -17,6 +17,11 @@
 							<i class="el-icon-setting"></i>
 							<span slot="title">gets</span>
 							<router-link to="/gets"></router-link>
+						</el-menu-item>
+						<el-menu-item index="7">
+							<i class="el-icon-setting"></i>
+							<span slot="title">gets2</span>
+							<router-link to="/gets2"></router-link>
 						</el-menu-item>
 						<el-menu-item index="2">
 							<i class="el-icon-setting"></i>
@@ -42,7 +47,7 @@
 				</el-aside>
 				<el-container>
 					<el-main><router-view></router-view></el-main>
-					<el-footer>qjy 临时制作</el-footer>
+					<!--<el-footer>qjy 临时制作</el-footer>-->
 				</el-container>
 			</el-container>
 		</el-container>

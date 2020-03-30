@@ -157,7 +157,7 @@
 				delIndexCachePC: [{
 					func:"delIndexCache",
 					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delIndexCache',
-					testConditions: ['permission'],
+					testConditions: ['首页缓存删除成功'],
 					msg: "站点:" + this.$options.name + "\n首页缓存清理",
 					processing: false,
 				}],

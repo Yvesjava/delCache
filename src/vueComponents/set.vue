@@ -1,5 +1,5 @@
 <template>
-	<el-table :data="$store.state.listProductColleague.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" style="width: 100%" stripe>
+	<el-table :data="$store.state.listProductColleague.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" current-row-key="id" style="width: 100%" stripe>
 		<el-table-column label="ID" prop="id"></el-table-column>
 		<el-table-column label="Name" prop="name"></el-table-column>
 		<el-table-column label="Status" prop="status">
@@ -27,7 +27,7 @@
 		},
 		methods: {
 			handleDelete( index, row ) {
-				this.$store.commit("changStatus",index)
+				this.$store.commit("changStatus",row.id)
 				console.log(this.$store.getters.getRtxReceives);
 				console.log(this.$store.getters.getRtxReceivesName);
 			}

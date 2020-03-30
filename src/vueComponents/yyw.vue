@@ -8,12 +8,20 @@
 		</div>
 		<div>
 			<el-tabs v-model="activeName" @tab-click="handleClick">
-				<el-tab-pane label="单款产品" name="first">
+				<el-tab-pane :label="delItemsCachePC[0].name" :name="delItemsCachePC[0].func">
 					<div class="ib-box">
 						<el-input placeholder="请输入id,多个以英文半角逗号隔开" v-model="delItemsCachePC[0].ids">
 							<template slot="prepend">PC</template>
 						</el-input>
-						<el-button :disabled="delItemsCachePC[0].ids.length<1" type="primary" :loading="delItemsCachePC[0].processing" @click="pcDelCache">清除缓存</el-button>
+						<el-button :disabled="delItemsCachePC[0].ids.length<1" type="primary" :loading="delItemsCachePC[0].processing" @click="pcDelCache(delItemsCachePC)">清除缓存</el-button>
+					</div>
+				</el-tab-pane>
+				<el-tab-pane :label="delSortCachePC[0].name" :name="delSortCachePC[0].func">
+					<div class="ib-box">
+						<el-input placeholder="请输入id,多个以英文半角逗号隔开" v-model="delSortCachePC[0].ids">
+							<template slot="prepend">PC</template>
+						</el-input>
+						<el-button :disabled="delSortCachePC[0].ids.length<1" type="primary" :loading="delSortCachePC[0].processing" @click="pcDelCache(delSortCachePC)">清除缓存</el-button>
 					</div>
 				</el-tab-pane>
 				<el-tab-pane label="首页缓存" name="second">
@@ -24,6 +32,18 @@
 				</el-tab-pane>
 				<el-tab-pane label="搜索页缓存" name="five">
 					<el-button type="primary" :loading="delSearchPC[0].processing" @click="allMost(delSearchPC[0])">清除搜索页缓存</el-button>
+				</el-tab-pane>
+				<el-tab-pane :label="delProducePC[0].name" :name="delProducePC[0].func">
+					<el-button type="primary" :loading="delProducePC[0].processing" @click.stop="allMost(delProducePC[0])">清除{{delProducePC[0].name}}缓存</el-button>
+				</el-tab-pane>
+				<el-tab-pane :label="delSales_promotionCachePC[0].name" :name="delSales_promotionCachePC[0].func">
+					<el-button type="primary" :loading="delSales_promotionCachePC[0].processing" @click.stop="allMost(delSales_promotionCachePC[0])">清除{{delSales_promotionCachePC[0].name}}缓存</el-button>
+				</el-tab-pane>
+				<el-tab-pane :label="delDiscountPC[0].name" :name="delDiscountPC[0].func">
+					<el-button type="primary" :loading="delDiscountPC[0].processing" @click.stop="allMost(delDiscountPC[0])">清除{{delDiscountPC[0].name}}缓存</el-button>
+				</el-tab-pane>
+				<el-tab-pane :label="delNewAndHotProdsPC[0].name" :name="delNewAndHotProdsPC[0].func">
+					<el-button type="primary" :loading="delNewAndHotProdsPC[0].processing" @click.stop="allMost(delNewAndHotProdsPC[0])">清除{{delNewAndHotProdsPC[0].name}}缓存</el-button>
 				</el-tab-pane>
 			</el-tabs>
 		</div>
@@ -78,6 +98,7 @@
 					processing: false,
 				}],
 				delNewAndHotProdsPC: [{
+					name:"热销产品缓存",
 					func:"delNewAndHotProds",
 					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delNewAndHotProds',
 					testConditions: ['permission'],
@@ -134,10 +155,11 @@
 					processing: false,
 				}],
 				delSales_promotionCachePC: [{
+					name:"promotion缓存",
 					func:"delSales_promotionCache",
-					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSales_promotionCache',
-					testConditions: ['permission'],
-					msg: "站点:" + this.$options.name + "\n热销产品页缓存清理",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delPromotionProduct',
+					testConditions: ['推广产品的缓存删除成功'],
+					msg: "站点:" + this.$options.name + "\n推广产品的缓存",
 					processing: false,
 				}],
 				delRenewCatalogCachePC: [{
@@ -147,17 +169,26 @@
 					msg: "站点:" + this.$options.name + "\n最新目录页缓存清理",
 					processing: false,
 				}],
-				delProduceCachePC: [{
-					func:"delProduceCache",
-					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delProduceCache',
-					testConditions: ['permission'],
+				delProducePC: [{
+					name:"新品缓存",
+					func:"delProduce",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delProduce',
+					testConditions: ['最新产品缓存删除成功'],
 					msg: "站点:" + this.$options.name + "\n最新产品页缓存清理",
+					processing: false,
+				}],
+				delDiscountPC: [{
+					name:"产品折扣页缓存",
+					func:"delDiscount",
+					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delDiscount',
+					testConditions: ['折扣产品缓存删除成功'],
+					msg: "站点:" + this.$options.name + "\n折扣产品缓存",
 					processing: false,
 				}],
 				delIndexCachePC: [{
 					func:"delIndexCache",
 					url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delIndexCache',
-					testConditions: ['permission'],
+					testConditions: ['首页缓存'],
 					msg: "站点:" + this.$options.name + "\n首页缓存清理",
 					processing: false,
 				}],
@@ -205,18 +236,24 @@
 				}],
 				delItemsCachePC: [
 					{
+						name: '产品缓存',
+						func: 'delItemsCache',
 						ids: '',
 						url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delItemsCache&producesId=',
-						testConditions: ['permission'],
+						testConditions: ['producesId','所有产品缓存删除成功'],
+						msg: '产品缓存清理成功\n产品ID\n',
 						processing: false,
 						successIds: []
 					}
 				],
 				delSortCachePC: [
 					{
+						name: '类别缓存',
+						func: 'delSortCache',
 						ids: '',
 						url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delSortCache&sortsId=',
-						testConditions: ['permission'],
+						testConditions: ['类别列表删除成功','所有头部导航删除成功'],
+						msg: '类别缓存清理成功\n类别ID\n',
 						processing: false,
 						successIds: []
 					}
@@ -226,6 +263,7 @@
 						ids: '',
 						url: '/'+this.$options.name+'/app/gets/awesomeTool.php?act=delCrumbsSearch&sortsId=',
 						testConditions: ['permission'],
+						msg: '',
 						processing: false,
 						successIds: []
 					}
@@ -240,9 +278,9 @@
 				let funStr = "this.$index.simpleGet(this, this."+obj.func+"PC[0])"
 				eval(funStr)
 			},
-			pcDelCache() {
-				let msg = "站点:"+this.$options.name+"\n产品缓存清理成功\n产品ID"
-				this.$index.delItems(this, this.delItemsCachePC[0], msg)
+			pcDelCache(data) {
+				let msg = "站点:"+this.$options.name+"\n" + data[0].msg
+				this.$index.delItems(this, data[0], msg)
 			}
 		},
 		name: "yyw"

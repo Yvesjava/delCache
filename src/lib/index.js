@@ -38,7 +38,7 @@ export default {
 		item.processing = true
 		await that.$axios.get(item.url).then(res => {
 			if (res.status === 200) {
-				if (item.testConditions.every(s => (res.data.indexOf(s) < 0))) {
+				if (item.testConditions.every(s => (res.data.indexOf(s) > 0))) {
 					// 成功了
 					that.$notify({
 						title: '成功',
@@ -92,9 +92,10 @@ export default {
 	delItems: async (that,item, sucMsg) => {
 		let _that = that
 		item.processing = true
-		await Promise.all(_that.$index.unique(item.ids.split(',')).map(async id => {
-			_that.$index.isIntNum(id) && await _that.$axios.get(item.url).then(res => {
-				if ((res.status === 200) ? (item.testConditions.every(s => (res.data.indexOf(s) < 0))) : false) {
+		let ids = item.ids.split(',')
+		await Promise.all(_that.$index.unique(ids).map(async id => {
+			_that.$index.isIntNum(parseInt(id)) && await _that.$axios.get(item.url + id).then(res => {
+				if ((res.status === 200) ? (item.testConditions.some(s => (res.data.indexOf(s) > 0))) : false) {
 					item.successIds.push(id)
 					_that.$notify({
 						title: '成功',
@@ -102,6 +103,7 @@ export default {
 						type: 'success'
 					})
 				} else {
+					console.log(res)
 					_that.$notify({
 						title: '失败',
 						message: res.data,
@@ -110,7 +112,8 @@ export default {
 				}
 			})
 		}))
-		item.successIds.length > 0 && _that.$index.successRtx(_that, sucMsg + "[" + item.successIds.join(',') + "]")
+		let idsLength = ids.length , successIdsLength = item.successIds.length
+		successIdsLength > 0 && _that.$index.successRtx(_that, sucMsg + "[" + item.successIds.join(',') + "]" + '\n提交个数:' + idsLength + '\t\t成功个数:' + successIdsLength + (idsLength > 0 ? '\n成功率:' + (successIdsLength/idsLength*100).toFixed(2) + '%' : ''))
 		item.processing = false
 		item.successIds = []
 	}
