@@ -86,10 +86,9 @@ export default {
 	 * 删除需要传入参数的缓存方法
 	 * @param that vue实例
 	 * @param item 对应的数组
-	 * @param sucMsg 成功的rt消息字符串
 	 * @returns {Promise<void>}
 	 */
-	delItems: async (that,item, sucMsg) => {
+	delItems: async (that,item) => {
 		let _that = that
 		item.processing = true
 		let ids = item.ids.split(',')
@@ -113,7 +112,7 @@ export default {
 			})
 		}))
 		let idsLength = ids.length , successIdsLength = item.successIds.length
-		successIdsLength > 0 && _that.$index.successRtx(_that, sucMsg + "[" + item.successIds.join(',') + "]" + '\n提交个数:' + idsLength + '\t\t成功个数:' + successIdsLength + (idsLength > 0 ? '\n成功率:' + (successIdsLength/idsLength*100).toFixed(2) + '%' : ''))
+		successIdsLength > 0 && _that.$index.successRtx(_that, item.successMsg + "[" + item.successIds.join(',') + "]" + '\n提交个数:' + idsLength + '\t\t成功个数:' + successIdsLength + (idsLength > 0 ? '\n成功率:' + (successIdsLength/idsLength*100).toFixed(2) + '%' : ''))
 		item.processing = false
 		item.successIds = []
 	}

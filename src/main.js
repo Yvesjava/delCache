@@ -1,7 +1,7 @@
 // 入口文件
 import '@babel/polyfill'
 import './css/index.css'
-// import './css/index.less'
+import './css/index.less'
 // import './css/index.scss'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -13,7 +13,7 @@ import index from './lib/index.js'
 import axios from 'axios'
 import 'http-proxy-middleware'
 import store from './store/index.js'
-
+Vue.config.devtools = true;
 Vue.use(VueRouter)
 Vue.use(ElementUI)
 Vue.prototype.$axios = axios;

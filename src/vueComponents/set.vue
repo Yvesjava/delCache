@@ -37,5 +37,10 @@
 </script>
 
 <style lang="less" scoped>
-
+	.el-table{
+		overflow-y: auto;
+		height: 800px;
+		box-sizing: content-box;
+		padding-right: 30px;
+	}
 </style>

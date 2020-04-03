@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="homeBox">
 		<el-container>
 			<el-header>缓存清理助手</el-header>
 			<el-container>
@@ -17,11 +17,6 @@
 							<i class="el-icon-setting"></i>
 							<span slot="title">gets</span>
 							<router-link to="/gets"></router-link>
-						</el-menu-item>
-						<el-menu-item index="7">
-							<i class="el-icon-setting"></i>
-							<span slot="title">gets2</span>
-							<router-link to="/gets2"></router-link>
 						</el-menu-item>
 						<el-menu-item index="2">
 							<i class="el-icon-setting"></i>
@@ -92,18 +87,15 @@
 		background-color: #E9EEF3;
 		color: #333;
 		text-align: center;
-		height: 400px;
 	}
 
 	body > .el-container {
 		margin-bottom: 40px;
 	}
-
 	.el-container:nth-child(5) .el-aside,
 	.el-container:nth-child(6) .el-aside {
 		line-height: 260px;
 	}
-
 	.el-container:nth-child(7) .el-aside {
 		line-height: 320px;
 	}
