@@ -19,7 +19,7 @@
 		</el-table>
 		<!-- 分页器 -->
 		<div class="block" style="margin-top:15px;">
-		<el-pagination align='center' @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[1,5,10,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="$store.state.listProductColleague.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase())).length">
+		<el-pagination align='center' @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="page_sizes" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="$store.state.listProductColleague.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase())).length">
 		</el-pagination>
 		</div>
 	</div>
@@ -32,7 +32,8 @@
 				search: '',
 				currentPage: 1, // 当前页码
 				total: 20, // 总条数
-				pageSize: 12 // 每页的数据条数
+				pageSize: 12, // 每页的数据条数
+				page_sizes: [6,12,18,24] // 每页的数据条数
 			}
 		},
 		methods: {
