@@ -12,6 +12,7 @@
     "p": "webpack --config webpack.config.js",
     "p1": "webpack",
     "dev1": "webpack-dev-server --open --port 3000 --contentBase src --hot",
+    "devOpen": "webpack-dev-server --open",
     "dev": "webpack-dev-server"
   },
   "keywords": [],

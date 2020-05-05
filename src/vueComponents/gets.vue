@@ -277,7 +277,7 @@
 						func: 'delSortCache',
 						ids: '',
 						url: '/' + this.$options.name + '/app/gets/awesomeTool.php?act=delSortCache&sortsId=',
-						testConditions: ['删除成功','所有列表页删除成功'],
+						testConditions: ['删除成功','所有头部导航删除成功'],
 						processing: false,
 						successMsg: "站点:"+this.$options.name+"\n分类缓存清理成功\n分类ID",
 						successIds: []
